@@ -112,7 +112,7 @@ directivityForSFL = 'a. Многообразие науки\n\n'+\
 '6)	Бизнес-проекты (секция на английском языке);'
 
 used_topics = []
-bot = telebot.TeleBot('7496221021:AAEe3KLyJbmAu0Tym9ZQgSHrYhl3VB1YstE')#Сюда API
+bot = telebot.TeleBot('7496221021:AAEe3')#Сюда API
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
