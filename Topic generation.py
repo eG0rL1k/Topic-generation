@@ -341,7 +341,7 @@ def handle_main_menu(message):
         bot.send_message(message.chat.id, 'Этот проект был создан для участия в конференции "Инженеры будущего"')
         bot.register_next_step_handler(message, handle_main_menu)
     elif message.text == 'Создатели проекта':
-        bot.send_message(message.chat.id, 'Орлов Егор Александрович \n Лепников Дмитрий Алексеевич \n Ким Виталий Валериянович')
+        bot.send_message(message.chat.id, '')
         bot.register_next_step_handler(message, handle_main_menu)
     else:
         bot.send_message(message.chat.id, 'Используйте кнопки меню')
