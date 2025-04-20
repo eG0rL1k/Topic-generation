@@ -251,7 +251,6 @@ def generate_roadmap(topic, chat_id):
     prompt = roadmapPrompt.format(topic=topic)
     response = get_gpt_response(prompt)
 
-    # Удаляем возможные предложения о помощи (на случай если GPT их добавит)
     unwanted_phrases = [
         "Если хочешь, могу помочь",
         "Вот стандартный RoadMap",
@@ -388,7 +387,6 @@ def handle_section_selection(message):
     state = user_state.get(chat_id, {})
     log_action("handle_section_selection", chat_id, f"Processing: {message.text}")
 
-    # Если пользователь нажал на кнопку другой конференции
     if message.text in CONFERENCES:
         user_state[chat_id]['conference'] = message.text
         conference = message.text
@@ -411,7 +409,6 @@ def handle_section_selection(message):
         bot.register_next_step_handler(message, handle_section_selection)
         return
 
-    # Обработка кнопки "Назад"
     if message.text == 'Назад':
         bot.send_message(chat_id, 'Главное меню', reply_markup=main_menu_keyboard())
         user_state[chat_id]['step'] = 'main_menu'
@@ -422,7 +419,6 @@ def handle_section_selection(message):
         if state['step'] == 'category_selection':
             categories = list(CONFERENCES[state['conference']]['sections']['sub_subsections'].keys())
 
-            # Улучшенная проверка ввода для категории
             if not message.text.isdigit():
                 raise ValueError("Введите номер категории цифрой")
 
@@ -445,7 +441,6 @@ def handle_section_selection(message):
             category = state['category']
             subsections = CONFERENCES[state['conference']]['sections']['sub_subsections'][category]
 
-            # Улучшенная проверка ввода для подсекции
             if not message.text.isdigit():
                 raise ValueError("Введите номер подсекции цифрой")
 
@@ -458,7 +453,7 @@ def handle_section_selection(message):
 
             bot.send_message(chat_id, f'Генерирую темы для: {full_section_name}...')
 
-            # Улучшенный промпт с учетом подсекции
+
             prompt = f"{rulesForGPTPrompt} {createTopics} для конференции {state['conference']}, секция: {full_section_name}"
 
             previous = used_topics.get(chat_id, [])
@@ -475,7 +470,7 @@ def handle_section_selection(message):
             bot.register_next_step_handler(message, handle_topics_menu)
 
         elif state['step'] == 'section_selection':
-            # Существующая логика для других конференций остается без изменений
+
             section_num = int(message.text)
             section = CONFERENCES[state['conference']]['sections'][section_num]
 
@@ -527,7 +522,6 @@ def handle_topics_menu(message):
     state = user_state.get(chat_id, {})
     log_action("handle_topics_menu", chat_id, f"Action: {message.text}")
 
-    # Обработка завершения работы
     if message.text == 'Закончить генерацию':
         bot.send_message(
             chat_id,
@@ -535,10 +529,9 @@ def handle_topics_menu(message):
             reply_markup=main_menu_keyboard()
         )
         user_state[chat_id] = {'step': 'main_menu'}
-        bot.register_next_step_handler(message, handle_main_menu)  # Важно: регистрируем обработчик главного меню
+        bot.register_next_step_handler(message, handle_main_menu)  
         return
 
-    # Обработка выбора темы для RoadMap
     if state.get('awaiting_topic_choice'):
         try:
             topic_num = int(message.text)
@@ -564,7 +557,6 @@ def handle_topics_menu(message):
         bot.register_next_step_handler(message, handle_topics_menu)
         return
 
-    # Стандартные действия
     if message.text == 'Сгенерировать другие темы':
         if state.get('step') != 'topics_shown':
             bot.send_message(chat_id, 'Сначала выберите секцию')
@@ -599,7 +591,6 @@ def handle_topics_menu(message):
     else:
         bot.send_message(chat_id, 'Используйте кнопки меню')
 
-    # Регистрируем обработчик для всех случаев, кроме "Закончить генерацию"
     if message.text != 'Закончить генерацию':
         bot.register_next_step_handler(message, handle_topics_menu)
 
